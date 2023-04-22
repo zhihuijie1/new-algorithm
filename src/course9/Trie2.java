@@ -1,5 +1,5 @@
 package algorithmbasic.class9;
-
+// https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
 import java.util.HashMap;
 
 public class Trie2 {
@@ -91,82 +91,5 @@ public class Trie2 {
             cur = cur.map.get(path);
         }
         cur.end--;
-    }
-
-
-    public static void main(String[] args) {
-        int testTime = 10000;
-        int maxArrayLength = 100;
-        int maxString = 100;
-        int i = 0;
-        for (i = 0; i < testTime; i++) {
-            System.out.println("test begin");
-            // 随机产生一个字符串数组
-            String[] stringLine = prodectString(maxArrayLength, maxString);
-            Trie trie1 = new Trie();
-            Trie2 trie2 = new Trie2();
-            double decide = Math.random();
-            if (decide < 0.25) {
-                for (int j = 0; j < 5; j++) {
-                    int k = (int) (Math.random() * stringLine.length); // [0 , stringLine.length - 1]
-                    System.out.println(k);
-                    System.out.println(stringLine.length);
-                    trie1.insert(stringLine[k]);
-                    trie2.insert(stringLine[k]);
-                }
-            } else if (decide < 0.5) {
-                int k = (int) (Math.random() * stringLine.length); // [0 , stringLine.length - 1]
-                trie1.remove(stringLine[k]);
-                trie2.remove(stringLine[k]);
-                System.out.println(stringLine.length);
-                System.out.println(k);
-            } else if (decide < 0.75) {
-                int x = (int) (Math.random() * 3 + 2);
-                for (int j = 0; j < x; j++) {
-                    int k = (int) (Math.random() * stringLine.length); // [0 , stringLine.length - 1]
-                    int m = (int) (Math.random() * stringLine[k].length()); // [0,line-1]
-                    String pre = stringLine[k].substring(0, m);
-                    int n1 = trie1.prefixNumber(pre);
-                    int n2 = trie2.profixNumber(pre);
-                    if (n1 != n2) {
-                        System.out.println("00ps");
-                        System.out.println(stringLine[k]);
-                        System.out.println(pre);
-                        break;
-                    }
-                }
-            } else {
-                int x = (int) (Math.random() * 2 + 3);
-                for (int j = 0; j < x; j++) {
-                    int k = (int) (Math.random() * stringLine.length); // [0 , stringLine.length - 1]
-                    System.out.println(k);
-                    System.out.println(stringLine.length);
-                    if (trie1.search(stringLine[k]) != trie2.search(stringLine[k])) {
-                        System.out.println("oops");
-                        break;
-                    }
-                }
-            }
-        }
-        if(i == testTime) {
-            System.out.println("great");
-        }else {
-            System.out.println("fuck");
-        }
-    }
-
-    public static String[] prodectString(int maxArrayLength, int maxString) {
-        int arraySize = (int) (Math.random() * maxArrayLength + 1); // [1,10]
-        String[] stringLine = new String[arraySize];
-        for (int i = 0; i < stringLine.length; i++) {
-            int StringLength = (int) (Math.random() * maxString); // [0,9]
-            // [97 , 122] a - z
-            char[] ch = new char[StringLength];
-            for (int j = 0; j < ch.length; j++) {
-                ch[j] = (char) ((int) (Math.random() * 26 + 97));
-            }
-            stringLine[i] = new String(ch);
-        }
-        return stringLine;
     }
 }
