@@ -89,7 +89,6 @@ public class Trie2 {
                 return;
             }
             cur = cur.map.get(path);
-            cur.pass--;
         }
         cur.end--;
     }
