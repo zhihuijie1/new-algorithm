@@ -28,21 +28,85 @@ public class RobotWalk {
         }
         //如果当前的位置在最左侧，只能往右行走。
         if (cur == 1) {
-            return process1(2, aim, rest-1, N);
+            return process1(2, aim, rest - 1, N);
         }
         //如果当前的位置在最右侧只能往左走。
         if (cur == N) {
-            return process1(N - 1, aim, rest-1, N);
+            return process1(N - 1, aim, rest - 1, N);
         }
 
         //当前的位置不在边缘，在中间，那既可以向左也可以向右走。
-        return process1(cur + 1, aim, rest-1, N) + process1(cur - 1, aim, rest-1, N);
+        return process1(cur + 1, aim, rest - 1, N) + process1(cur - 1, aim, rest - 1, N);
     }
 
 
+    //进行优化1
+    public static int ways2(int N, int start, int aim, int K) {
+        //加入一个缓存来存储之前计算过的结果->方便以后遇到一样的情况下直接取结果。
+        int[][] dp = new int[N + 1][K + 1];
+        //初始化缓存中的数据一上来都是-1.
+        for (int i = 0; i <= N; i++) {
+            for (int j = 0; j <= K; j++) {
+                dp[i][j] = -1;
+            }
+        }
+        return process2(start, K, aim, N, dp);
+    }
 
-    private static int process2(int cur, int aim, int rest, int N) {
+    //返回的结果是由cur(当前位置),rest(还剩几步可以走)这两个元素决定的。
+    //cur 取值范围是:[1,N]
+    //rest 取值范围是:[0,K]
+    //所以一共有(N * K)种搭配,可以创建一个二维数组来存放结果值。
+    private static int process2(int cur, int rest, int aim, int N, int[][] dp) {
+        //一进来就判断一下缓存中有无当前情况下的结果。
+        //如果缓存中的数据不是-1说明当前情况之前也遇到过，直接返回之前遇到时的处理结果即可。
+        if (dp[cur][rest] != -1) {
+            return dp[cur][rest];
+        }
 
+        //当前情况之前没有遇到过。
+        int result = -1;
+        //下面的四种情况只会命中一个。
+        if (rest == 0) {
+            result = cur == aim ? 1 : 0;
+        } else if (cur == 1) {
+            result = process2(2, rest - 1, aim, N, dp);
+        } else if (cur == N) {
+            result = process2(N - 1, rest - 1, aim, N, dp);
+        } else {
+            result = process2(cur - 1, rest - 1, aim, N, dp) + process2(cur + 1, rest - 1, aim, N, dp);
+        }
+
+        dp[cur][rest] = result;
+
+        return result;
+    }
+
+
+    public static int ways3(int N, int start, int aim, int K) {
+        int[][] dp = new int[N + 1][K + 1];
+        dp[aim][0] = 1;
+        for (int i = 1; i <= K; i++) { //列
+            dp[1][i] = dp[2][i - 1];
+
+            for (int j = 2; j <= N - 1; j++) { //行
+                dp[j][i] = dp[j - 1][i - 1] + dp[j + 1][i - 1];
+            }
+
+            dp[N][i] = dp[N - 1][i - 1];
+        }
+
+        return dp[start][K];
+    }
+
+
+    public static void main(String[] args) {
+        int a = ways1(7, 3, 5, 4);
+        int b = ways2(7, 3, 5, 4);
+        int c = ways3(7, 3, 5, 4);
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
     }
 
 }
